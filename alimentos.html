@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Alimentos</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #eee; }
+    input { width: 100%; padding: 4px; }
+    #resultado { margin-top: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<h2>Alimentos</h2>
+<table id="alimentosTable">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>kcal/kg</th>
+      <th>prot/kg</th>
+      <th>gras/kg</th>
+      <th>carb/kg</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<h2>Registrar Alimento</h2>
+<form id="registroAlimentoForm" method="post">
+  <label>Nombre: <input type="text" name="nombre" required></label><br>
+  <label>kcal/kg: <input type="number" step="0.01" name="kcal_kg" required></label><br>
+  <label>prot/kg: <input type="number" step="0.01" name="prot_kg" required></label><br>
+  <label>gras/kg: <input type="number" step="0.01" name="gras_kg" required></label><br>
+  <label>carb/kg: <input type="number" step="0.01" name="carb_kg" required></label><br>
+  <button type="submit">Registrar</button>
+</form>
+
+<h2>Editar Alimento</h2>
+<form id="editarAlimentoForm" method="post">
+  <input type="hidden" name="id" id="editId">
+  <label>Nombre: <input type="text" name="nombre" id="editNombre" required></label><br>
+  <label>kcal/kg: <input type="number" step="0.01" name="kcal_kg" id="editKcal" required></label><br>
+  <label>prot/kg: <input type="number" step="0.01" name="prot_kg" id="editProt" required></label><br>
+  <label>gras/kg: <input type="number" step="0.01" name="gras_kg" id="editGras" required></label><br>
+  <label>carb/kg: <input type="number" step="0.01" name="carb_kg" id="editCarb" required></label><br>
+  <button type="submit">Guardar Cambios</button>
+</form>
+
+<div id="resultado"></div>
+
+<!-- IMPORTANTE: carpeta js en minúsculas y endpoints con A mayúscula -->
+<script src="JS/alimentos.js"></script>
+</body>
+</html>
