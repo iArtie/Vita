@@ -12,16 +12,26 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             tablaUsuarios.innerHTML = '';
             data.forEach(usuario => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${usuario.nombre}</td>
-                    <td>${usuario.apellido}</td>
-                    <td>${usuario.username}</td>
-                    <td>${usuario.email}</td>
-                    <td><button data-id="${usuario.id}" class="editarBtn">Editar</button></td>
-                `;
-                tablaUsuarios.appendChild(tr);
-            });
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+              <td>${usuario.id}</td>
+              <td>${usuario.nombre}</td>
+              <td>${usuario.apellido}</td>
+              <td>${usuario.username}</td>
+              <td>${usuario.email}</td>
+              <td>${usuario.genero || ''}</td>
+              <td>${parseFloat(usuario.altura_cm).toFixed(2)}</td>
+              <td>${parseFloat(usuario.peso_kg).toFixed(2)}</td>
+              <td>${usuario.fecha_nacimiento}</td>
+              <td>${usuario.edad}</td>
+              <td>${usuario.rol}</td>
+            <td>
+            <button data-id="${usuario.id}" class="editarBtn">Editar</button>
+            <button data-id="${usuario.id}" class="eliminarBtn">Eliminar</button>
+           </td>
+    `;
+    tablaUsuarios.appendChild(tr);
+});
 
             // Botones de editar
             document.querySelectorAll('.editarBtn').forEach(btn => {
