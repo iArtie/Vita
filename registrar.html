@@ -26,28 +26,6 @@
 
     <div id="resultado" style="margin-top:20px; font-weight:bold;"></div>
 
-    <script>
-        const form = document.getElementById('registroForm');
-        const resultado = document.getElementById('resultado');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(form);
-
-            fetch('/usuarios/registrar.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                resultado.textContent = data;
-                form.reset();
-            })
-            .catch(error => {
-                resultado.textContent = "Error: " + error;
-            });
-        });
-    </script>
+     <script src="/js/usuarios.js"></script>
 </body>
 </html>
