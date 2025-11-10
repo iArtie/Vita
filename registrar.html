@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba Registro</title>
+</head>
+<body>
+    <h1>Registrar Usuario</h1>
+    <form id="registroForm">
+        <label>Nombre: <input type="text" name="nombre" required></label><br>
+        <label>Apellido: <input type="text" name="apellido" required></label><br>
+        <label>Username: <input type="text" name="username" required></label><br>
+        <label>Fecha Nacimiento: <input type="date" name="fecha_nacimiento" required></label><br>
+        <label>Género: 
+            <select name="genero" required>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+            </select>
+        </label><br>
+        <label>Altura (cm): <input type="number" name="altura_cm" required></label><br>
+        <label>Peso (kg): <input type="number" name="peso_kg" required></label><br>
+        <label>Email: <input type="email" name="email" required></label><br>
+        <label>Password: <input type="password" name="password" required></label><br>
+        <button type="submit">Registrar</button>
+    </form>
+
+    <div id="resultado" style="margin-top:20px; font-weight:bold;"></div>
+
+    <script>
+        const form = document.getElementById('registroForm');
+        const resultado = document.getElementById('resultado');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            fetch('/usuarios/registrar.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                resultado.textContent = data;
+                form.reset();
+            })
+            .catch(error => {
+                resultado.textContent = "Error: " + error;
+            });
+        });
+    </script>
+</body>
+</html>
