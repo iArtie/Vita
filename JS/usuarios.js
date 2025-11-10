@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Registro de usuario
     const formRegistro = document.getElementById('registroForm');
     if (formRegistro) {
         formRegistro.addEventListener('submit', function(e) {
@@ -11,25 +10,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.text())
+            .then(response => response.json())
             .then(data => {
                 const resultado = document.getElementById('resultado');
-
-                if (data.toLowerCase().includes('duplicate entry')) {
-                    if (data.toLowerCase().includes('username')) {
-                        resultado.textContent = "El username ya está registrado.";
-                    } else if (data.toLowerCase().includes('email')) {
-                        resultado.textContent = "El correo ya está registrado.";
-                    } else {
-                        resultado.textContent = "Error de duplicado en la base de datos.";
-                    }
-                } else {
-                    resultado.textContent = data;
+                
+                if (data.success) {
+                    resultado.textContent = "✅" + data.message;
+                    resultado.style.color = "green";
                     formRegistro.reset();
+                } else {
+                    resultado.textContent = "❌" + data.message;
+                    resultado.style.color = "red";
                 }
             })
             .catch(error => {
                 document.getElementById('resultado').textContent = "Error: " + error;
+                document.getElementById('resultado').style.color = "red";
             });
         });
     }
