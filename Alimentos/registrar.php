@@ -1,55 +1,54 @@
 <?php
 header('Content-Type: application/json');
-include('../includes/db.php');
+require_once '../../conexion.php';
 
-$response = ['success' => false, 'message' => ''];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $usuario_id = $_POST['usuario_id'] ?? null;
+    $nombre = $_POST['nombre'] ?? null;
+    $kcal_kg = $_POST['kcal_kg'] ?? null;
+    $prot_kg = $_POST['prot_kg'] ?? null;
+    $gras_kg = $_POST['gras_kg'] ?? null;
+    $carb_kg = $_POST['carb_kg'] ?? null;
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    $response['message'] = "Método no permitido.";
-    echo json_encode($response);
-    exit;
-}
+    if (!$usuario_id || !$nombre) {
+        echo json_encode(['success' => false, 'message' => 'Faltan datos obligatorios']);
+        exit;
+    }
 
-$nombre  = trim($_POST['nombre'] ?? '');
-$kcal_kg = $_POST['kcal_kg'] ?? '';
-$prot_kg = $_POST['prot_kg'] ?? '';
-$gras_kg = $_POST['gras_kg'] ?? '';
-$carb_kg = $_POST['carb_kg'] ?? '';
+    // Generar un UUID (simplificado) si no lo genera la DB
+    $id = uniqid();
+    $creado_el = date('Y-m-d H:i:s'); // <- Aquí se guarda la fecha actual
 
-if ($nombre === '' || $kcal_kg === '' || $prot_kg === '' || $gras_kg === '' || $carb_kg === '') {
-    $response['message'] = "Todos los campos son obligatorios.";
-    echo json_encode($response);
-    exit;
-}
+    $query = "INSERT INTO alimento_personalizado 
+                (id, usuario_id, nombre, kcal_kg, prot_kg, gras_kg, carb_kg, creado_el)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-$check = $conn->prepare("SELECT id FROM alimento WHERE nombre = ?");
-$check->bind_param("s", $nombre);
-$check->execute();
-$res = $check->get_result();
+    $stmt = $conn->prepare($query);
+    if ($stmt) {
+        $stmt->bind_param(
+            "ssssdddd",
+            $id,
+            $usuario_id,
+            $nombre,
+            $kcal_kg,
+            $prot_kg,
+            $gras_kg,
+            $carb_kg,
+            $creado_el
+        );
 
-if ($res->num_rows > 0) {
-    $response['message'] = "Ya existe un alimento con ese nombre.";
-    echo json_encode($response);
-    exit;
-}
+        if ($stmt->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Alimento registrado correctamente']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al registrar el alimento: ' . $stmt->error]);
+        }
+        $stmt->close();
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Error al preparar la consulta: ' . $conn->error]);
+    }
 
-$id = uniqid();
-
-$sql = "INSERT INTO alimento (id, nombre, kcal_kg, prot_kg, gras_kg, carb_kg)
-        VALUES (?, ?, ?, ?, ?, ?)";
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ssdddd", $id, $nombre, $kcal_kg, $prot_kg, $gras_kg, $carb_kg);
-
-if ($stmt->execute()) {
-    $response['success'] = true;
-    $response['message'] = "Alimento registrado correctamente.";
-    $response['id'] = $id;
+    $conn->close();
 } else {
-    $response['message'] = "Error al registrar: " . $stmt->error;
+    echo json_encode(['success' => false, 'message' => 'Método no permitido']);
 }
-
-$stmt->close();
-$conn->close();
-
-echo json_encode($response, JSON_UNESCAPED_UNICODE);
+?>

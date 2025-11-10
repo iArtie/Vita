@@ -43,15 +43,17 @@ function cargarAlimentos() {
 
 // Cargar alimentos personalizados
 function cargarAlimentosPersonalizados() {
-    fetch('/Alimentos/AlimentosPeronalizados/obtener.php')
+    fetch('/Alimentos/AlimentosPersonalizados/obtener.php')
         .then(res => res.json())
-        .then(data => {
+        .then(resp => {
             alimentoPersonalizadoSelect.innerHTML = '<option value="">-- Ninguno --</option>';
-            if (!Array.isArray(data)) return;
-            data.forEach(a => {
+
+            if (!resp.success || !Array.isArray(resp.data)) return;
+
+            resp.data.forEach(a => {
                 const opt = document.createElement('option');
                 opt.value = a.id;
-                opt.textContent = a.nombre;
+                opt.textContent = `${a.nombre} (${a.usuario})`;
                 alimentoPersonalizadoSelect.appendChild(opt);
             });
         })
@@ -142,9 +144,9 @@ function editarRegistro(id) {
             if(!r) return;
 
             document.getElementById('registroId').value = r.id;
-            usuarioSelect.value = r.usuario_id;
-            alimentoSelect.value = r.alimento_id || '';
-            alimentoPersonalizadoSelect.value = r.alimento_personalizado_id || '';
+            usuarioSelect.value = r.usuario_id ?? '';
+            alimentoSelect.value = r.alimento_id ?? '';
+            alimentoPersonalizadoSelect.value = r.alimento_personalizado_id ?? '';
             document.getElementById('fechaHora').value = r.fecha_hora.replace(' ', 'T');
             document.getElementById('porcionKg').value = r.porcion_kg;
             document.getElementById('kcal').value = r.kcal;

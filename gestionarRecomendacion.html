@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Recomendaciones</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1 id="formTitulo">Agregar Nueva Recomendación</h1>
+
+    <form id="recomendacionForm">
+        <input type="hidden" id="recomendacionId">
+
+        <label for="usuarioId">Usuario:</label>
+        <select id="usuarioId" required></select><br>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" required></textarea><br>
+
+        <label for="prioridad">Prioridad:</label>
+        <select id="prioridad">
+            <option value="alta">Alta</option>
+            <option value="media" selected>Media</option>
+            <option value="baja">Baja</option>
+        </select><br>
+
+        <label for="estado">Estado:</label>
+        <select id="estado">
+            <option value="pendiente" selected>Pendiente</option>
+            <option value="aceptada">Aceptada</option>
+            <option value="descartada">Descartada</option>
+        </select><br>
+
+        <label for="fechaGeneracion">Fecha de Generación:</label>
+        <input type="datetime-local" id="fechaGeneracion" required><br>
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <div id="resultado"></div>
+
+    <h2>Recomendaciones</h2>
+    <table border="1" id="recomendacionTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Descripción</th>
+                <th>Prioridad</th>
+                <th>Estado</th>
+                <th>Fecha Generación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script src="JS/recomendacion.js"></script>
+</body>
+</html>
