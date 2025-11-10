@@ -25,7 +25,7 @@ function cargarUsuarios() {
 
 // Cargar tipos de actividad
 function cargarTiposActividad() {
-    fetch('/actividad/actividad_tipo/obtener.php')
+    fetch('/actividad/actividad_tipo_obtener.php')
         .then(res => res.json())
         .then(data => {
             actividadSelect.innerHTML = '';
@@ -33,7 +33,7 @@ function cargarTiposActividad() {
             data.data.forEach(a => {
                 const opt = document.createElement('option');
                 opt.value = a.id;
-                opt.textContent = a.nombre;
+                opt.textContent = a.username;
                 actividadSelect.appendChild(opt);
             });
         });
