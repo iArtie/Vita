@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Comida</title>
+</head>
+<body>
+    <h1 id="formTitulo">Agregar Nuevo Registro de Comida</h1>
+
+    <form id="registroComidaForm">
+        <input type="hidden" id="registroId">
+
+        <label for="usuarioId">Usuario:</label>
+        <select id="usuarioId"></select><br><br>
+
+        <label for="alimentoId">Alimento:</label>
+        <select id="alimentoId">
+            <option value="">-- Ninguno --</option>
+        </select><br><br>
+
+        <label for="alimentoPersonalizadoId">Alimento Personalizado:</label>
+        <select id="alimentoPersonalizadoId">
+            <option value="">-- Ninguno --</option>
+        </select><br><br>
+
+        <label for="fechaHora">Fecha y Hora:</label>
+        <input type="datetime-local" id="fechaHora" required><br><br>
+
+        <label for="porcionKg">Porción (kg):</label>
+        <input type="number" id="porcionKg" step="0.001" required><br><br>
+
+        <label for="kcal">Kcal:</label>
+        <input type="number" id="kcal" step="0.01" required><br><br>
+
+        <label for="protG">Proteínas (g):</label>
+        <input type="number" id="protG" step="0.01" required><br><br>
+
+        <label for="grasG">Grasas (g):</label>
+        <input type="number" id="grasG" step="0.01" required><br><br>
+
+        <label for="carbG">Carbohidratos (g):</label>
+        <input type="number" id="carbG" step="0.01" required><br><br>
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <p id="resultado"></p>
+
+    <h2>Registros de Comida</h2>
+    <table border="1" id="registroComidaTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Alimento</th>
+                <th>Alimento Personalizado</th>
+                <th>Fecha Hora</th>
+                <th>Porción (kg)</th>
+                <th>Kcal</th>
+                <th>Proteínas (g)</th>
+                <th>Grasas (g)</th>
+                <th>Carbohidratos (g)</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script src="JS/registroComida.js"></script>
+</body>
+</html>
