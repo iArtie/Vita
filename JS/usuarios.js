@@ -12,26 +12,27 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             tablaUsuarios.innerHTML = '';
             data.forEach(usuario => {
-              const tr = document.createElement('tr');
-              tr.innerHTML = `
-              <td>${usuario.id}</td>
-              <td>${usuario.nombre}</td>
-              <td>${usuario.apellido}</td>
-              <td>${usuario.username}</td>
-              <td>${usuario.email}</td>
-              <td>${usuario.genero || ''}</td>
-              <td>${parseFloat(usuario.altura_cm).toFixed(2)}</td>
-              <td>${parseFloat(usuario.peso_kg).toFixed(2)}</td>
-              <td>${usuario.fecha_nacimiento}</td>
-              <td>${usuario.edad}</td>
-              <td>${usuario.rol}</td>
-            <td>
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td>${usuario.id}</td>
+        <td>${usuario.nombre}</td>
+        <td>${usuario.apellido}</td>
+        <td>${usuario.username}</td>
+        <td>${usuario.email}</td>
+        <td>${usuario.genero || ''}</td>
+        <td>${usuario.altura_cm || ''}</td>
+        <td>${usuario.peso_kg || ''}</td>
+        <td>${usuario.fecha_nacimiento || ''}</td>
+        <td>${usuario.edad || ''}</td>
+        <td>${usuario.rol || ''}</td>
+        <td>
             <button data-id="${usuario.id}" class="editarBtn">Editar</button>
             <button data-id="${usuario.id}" class="eliminarBtn">Eliminar</button>
-           </td>
+        </td>
     `;
     tablaUsuarios.appendChild(tr);
 });
+
 
             // Botones de editar
             document.querySelectorAll('.editarBtn').forEach(btn => {
@@ -46,9 +47,30 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.getElementById('editGenero').value = usuario.genero;
                         document.getElementById('editAltura').value = usuario.altura_cm;
                         document.getElementById('editPeso').value = usuario.peso_kg;
-                        document.getElementById('editFecha').value = usuario.fecha_nacimiento;
                         resultado.textContent = '';
                     }
+                });
+            });
+
+            // Botones de eliminar
+            document.querySelectorAll('.eliminarBtn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (!confirm('¿Seguro que quieres eliminar este usuario?')) return;
+                    const id = btn.dataset.id;
+                    const formData = new FormData();
+                    formData.append('id', id);
+
+                    fetch('/usuarios/eliminar.php', { method: 'POST', body: formData })
+                        .then(res => res.json())
+                        .then(data => {
+                            resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
+                            resultado.style.color = data.success ? "green" : "red";
+                            if (data.success) cargarUsuarios();
+                        })
+                        .catch(err => {
+                            resultado.textContent = "Error: " + err;
+                            resultado.style.color = "red";
+                        });
                 });
             });
         });
@@ -69,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
                 resultado.style.color = data.success ? "green" : "red";
-                if (data.success) cargarUsuarios(); // recargar tabla
+                if (data.success) cargarUsuarios();
             })
             .catch(err => {
                 resultado.textContent = "Error: " + err;
