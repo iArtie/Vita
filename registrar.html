@@ -2,30 +2,36 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Prueba Registro</title>
+    <title>Registro de Usuario</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/usuarios.css">
 </head>
 <body>
+
     <h1>Registrar Usuario</h1>
+
     <form id="registroForm">
-        <label>Nombre: <input type="text" name="nombre" required></label><br>
-        <label>Apellido: <input type="text" name="apellido" required></label><br>
-        <label>Username: <input type="text" name="username" required></label><br>
-        <label>Fecha Nacimiento: <input type="date" name="fecha_nacimiento" required></label><br>
+        <label>Nombre: <input type="text" name="nombre" required></label>
+        <label>Apellido: <input type="text" name="apellido" required></label>
+        <label>Username: <input type="text" name="username" required></label>
+        <label>Fecha de Nacimiento: <input type="date" name="fecha_nacimiento" required></label>
         <label>Género: 
             <select name="genero" required>
+                <option value="">Selecciona...</option>
                 <option value="M">Masculino</option>
                 <option value="F">Femenino</option>
             </select>
-        </label><br>
-        <label>Altura (cm): <input type="number" name="altura_cm" required></label><br>
-        <label>Peso (kg): <input type="number" name="peso_kg" required></label><br>
-        <label>Email: <input type="email" name="email" required></label><br>
-        <label>Password: <input type="password" name="password" required></label><br>
+        </label>
+        <label>Altura (cm): <input type="number" name="altura_cm" step="0.01" required></label>
+        <label>Peso (kg): <input type="number" name="peso_kg" step="0.01" required></label>
+        <label>Email: <input type="email" name="email" required></label>
+        <label>Contraseña: <input type="password" name="password" required></label>
         <button type="submit">Registrar</button>
     </form>
 
-    <div id="resultado" style="margin-top:20px; font-weight:bold;"></div>
+    <div id="resultado"></div>
 
-     <script src="js/usuarios.js"></script>
+    <script src="JS/usuarios.js"></script>
+
 </body>
 </html>
