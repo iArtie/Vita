@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vita - Dashboard</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/4w2X5SgB/vita-degradado.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="JS/config.js"></script>
+    <link rel="stylesheet" href="CSS/dashboard.css">
+</head>
+<body class="theme-default">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="mobile-header-content">
+            <div class="mobile-logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Vita</h1>
+            </div>
+            <div class="mobile-user">
+                <div class="user-info">
+                    <div class="user-name" id="mobileUserName">Cargando...</div>
+                    <div class="user-role" id="mobileUserLevel">Nivel: Cargando...</div>
+                </div>
+                <img id="mobileUserAvatar" class="mobile-avatar" src="" alt="Avatar">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para móviles -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Vita</h1>
+            </div>
+            
+            <ul class="menu">
+                <li class="menu-item active">
+                    <a href="dashboard.html" class="menu-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="metas.html" class="menu-link">
+                        <i class="fas fa-tasks"></i>
+                        <span>Mis Metas</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="comida.html" class="menu-link">
+                        <i class="fas fa-utensils"></i>
+                        <span>Comida</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="actividades.html" class="menu-link">
+                        <i class="fas fa-running"></i>
+                        <span>Actividades</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="misiones.html" class="menu-link">
+                        <i class="fas fa-trophy"></i>
+                        <span>Misiones Diarias</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="perfil.html" class="menu-link">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="configuracion.html" class="menu-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header (Solo desktop) -->
+            <div class="header">
+                <div class="user-profile">
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Cargando...</div>
+                        <div class="user-role" id="userLevel">Nivel: Cargando...</div>
+                    </div>
+                    <img id="userAvatar" class="avatar" src="" alt="Avatar">
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Card 1: Puntos Totales -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Puntos Totales</h3>
+                        <div class="card-icon bg-primary">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number" id="puntosTotales">0</div>
+                    <div class="stat-label">Puntos acumulados</div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-info">
+                            <span id="proximoNivel">Próximo nivel: 100 pts</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-value" id="puntosProgress" style="width: 0%; background-color: var(--primary);"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 2: Días Consecutivos -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Días Consecutivos</h3>
+                        <div class="card-icon bg-success">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number" id="diasConsecutivos">0</div>
+                    <div class="stat-label">Racha actual</div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-info">
+                            <span>Mantén tu racha</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-value" id="rachaProgress" style="width: 0%; background-color: var(--success);"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 3: Nivel Actual -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Nivel Actual</h3>
+                        <div class="card-icon bg-warning">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number" id="nivelActual">1</div>
+                    <div class="stat-label">Tu progreso</div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-info">
+                            <span>¡Sigue mejorando!</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 4: Misiones Completadas -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Misiones Completadas</h3>
+                        <div class="card-icon bg-info">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number" id="misionesCompletadas">0</div>
+                    <div class="stat-label">Misiones exitosas</div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-info">
+                            <span id="misionesProgreso">Total completadas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Column Section -->
+            <div class="dashboard-grid">
+                <!-- Metas Activas -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Metas Activas</h3>
+                    </div>
+                    
+                    <div class="goals-grid" id="metasGrid">
+                        <div class="goal-item" style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-tasks" style="font-size: 2rem; color: var(--text-secondary); margin-bottom: 1rem;"></i>
+                            <p style="color: var(--text-secondary);">Cargando metas...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actividad Reciente -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Actividad Reciente</h3>
+                    </div>
+                    
+                    <div id="actividadReciente">
+                        <div class="recommendation-item">
+                            <div class="recommendation-title">Bienvenido a Vita</div>
+                            <div class="recommendation-desc">Comienza registrando tu primera comida o actividad para ver tu progreso aquí.</div>
+                            <div class="recommendation-actions">
+                                <button class="btn btn-primary" onclick="window.location.href='comida.html'">Registrar Comida</button>
+                                <button class="btn btn-outline" onclick="window.location.href='actividades.html'">Registrar Actividad</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+     <script src="JS/dashboard.js"></script>
+</body>
+</html>

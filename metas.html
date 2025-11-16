@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vita - Mis Metas</title>
+     <link rel="icon" type="image/png" href="https://i.ibb.co/4w2X5SgB/vita-degradado.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="JS/config.js"></script>
+    <link rel="stylesheet" href="CSS/metas.css">
+</head>
+<body class="theme-default">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="mobile-header-content">
+            <div class="mobile-logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Vita</h1>
+            </div>
+            <button class="menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Overlay para móviles -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Vita</h1>
+            </div>
+            
+            <ul class="menu">
+                <li class="menu-item">
+                    <a href="dashboard.html" class="menu-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a href="metas.html" class="menu-link">
+                        <i class="fas fa-tasks"></i>
+                        <span>Mis Metas</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="comida.html" class="menu-link">
+                        <i class="fas fa-utensils"></i>
+                        <span>Comida</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="actividades.html" class="menu-link">
+                        <i class="fas fa-running"></i>
+                        <span>Actividades</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="misiones.html" class="menu-link">
+                        <i class="fas fa-trophy"></i>
+                        <span>Misiones Diarias</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="perfil.html" class="menu-link">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="configuracion.html" class="menu-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1 class="page-title">Mis Metas</h1>
+                <button class="btn btn-primary" onclick="openModal()">
+                    <i class="fas fa-plus"></i>
+                    Nueva Meta
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Tus Objetivos de Salud</h2>
+                </div>
+                <p>Establece y gestiona tus metas de salud y fitness. Puedes crear metas de peso, calorías, proteínas, carbohidratos y grasas.</p>
+            </div>
+
+            <div id="metasContainer">
+                <div class="empty-state">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>No tienes metas establecidas</h3>
+                    <p>Comienza creando tu primera meta para llevar un mejor control de tu salud.</p>
+                    <button class="btn btn-primary" onclick="openModal()" style="margin-top: 1rem;">
+                        <i class="fas fa-plus"></i>
+                        Crear Mi Primera Meta
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para crear/editar meta -->
+    <div id="metaModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Nueva Meta</h3>
+                <button class="close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="metaForm">
+                <input type="hidden" id="metaId">
+                
+                <div class="form-group">
+                    <label class="form-label" for="metaTipo">Tipo de Meta</label>
+                    <select class="form-select" id="metaTipo" required>
+                        <option value="">Selecciona un tipo</option>
+                        <option value="peso">Peso</option>
+                        <option value="calorias">Calorías</option>
+                        <option value="proteinas">Proteínas</option>
+                        <option value="carbohidratos">Carbohidratos</option>
+                        <option value="grasas">Grasas</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="metaValor">Valor Objetivo</label>
+                    <input type="number" class="form-control" id="metaValor" step="0.01" required placeholder="Ej: 70.5">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="metaEstado">Estado</label>
+                    <select class="form-select" id="metaEstado" required>
+                        <option value="activa">Activa</option>
+                        <option value="completada">Completada</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Meta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+     <script src="JS/metas.js"></script>
+</body>
+</html>

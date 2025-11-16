@@ -20,6 +20,7 @@ $email = trim($_POST['email'] ?? '');
 $genero = trim($_POST['genero'] ?? '');
 $altura_cm = $_POST['altura_cm'] ?? '';
 $peso_kg = $_POST['peso_kg'] ?? '';
+$avatar_id = $_POST['avatar_id'] ?? '';
 
 // Validar campos obligatorios
 if (!$id || !$nombre || !$apellido || !$username || !$email || !$genero || $altura_cm === '' || $peso_kg === '') {
@@ -46,29 +47,44 @@ if ($resultCheck->num_rows > 0) {
     exit;
 }
 
-// Actualizar usuario
-$sql = "UPDATE usuario SET nombre=?, apellido=?, username=?, email=?, genero=?, altura_cm=?, peso_kg=? WHERE id=?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param(
-    "sssssdsi",
-    $nombre,
-    $apellido,
-    $username,
-    $email,
-    $genero,
-    $altura_cm,
-    $peso_kg,
-    $id
-);
+// Iniciar transacción
+$conn->begin_transaction();
 
-if ($stmt->execute()) {
+try {
+    // Actualizar usuario
+    $sqlUsuario = "UPDATE usuario SET nombre=?, apellido=?, username=?, email=?, genero=?, altura_cm=?, peso_kg=? WHERE id=?";
+    $stmtUsuario = $conn->prepare($sqlUsuario);
+    $stmtUsuario->bind_param("sssssdsi", $nombre, $apellido, $username, $email, $genero, $altura_cm, $peso_kg, $id);
+    
+    if (!$stmtUsuario->execute()) {
+        throw new Exception("Error al actualizar usuario: " . $stmtUsuario->error);
+    }
+
+    // Actualizar avatar en detalle_usuario si se proporcionó
+    if ($avatar_id) {
+        $sqlDetalle = "UPDATE detalle_usuario SET avatar_id = ? WHERE usuario_id = ?";
+        $stmtDetalle = $conn->prepare($sqlDetalle);
+        $stmtDetalle->bind_param("is", $avatar_id, $id);
+        
+        if (!$stmtDetalle->execute()) {
+            throw new Exception("Error al actualizar avatar: " . $stmtDetalle->error);
+        }
+        $stmtDetalle->close();
+    }
+
+    // Confirmar transacción
+    $conn->commit();
+    
     $response['success'] = true;
     $response['message'] = "Usuario actualizado correctamente.";
-} else {
-    $response['message'] = "Error al actualizar: " . $stmt->error;
+
+} catch (Exception $e) {
+    // Revertir transacción en caso de error
+    $conn->rollback();
+    $response['message'] = $e->getMessage();
 }
 
-$stmt->close();
+$stmtUsuario->close();
 $conn->close();
 echo json_encode($response);
 ?>

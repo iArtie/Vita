@@ -1,61 +1,55 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json');
 include('../includes/db.php');
 
 $response = ['success' => false, 'message' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    $response['message'] = 'Método no permitido.';
+    $response['message'] = "Método no permitido.";
     echo json_encode($response);
     exit;
 }
 
-// Leer JSON bruto
-$input = json_decode(file_get_contents("php://input"), true);
+$nombre  = trim($_POST['nombre'] ?? '');
+$kcal_kg = $_POST['kcal_kg'] ?? '';
+$prot_kg = $_POST['prot_kg'] ?? '';
+$gras_kg = $_POST['gras_kg'] ?? '';
+$carb_kg = $_POST['carb_kg'] ?? '';
 
-// Validar estructura JSON
-$nombre  = trim($input['nombre'] ?? '');
-$kcal_kg = $input['kcal_kg'] ?? null;
-$prot_kg = $input['prot_kg'] ?? null;
-$gras_kg = $input['gras_kg'] ?? null;
-$carb_kg = $input['carb_kg'] ?? null;
-
-if ($nombre === '' || $kcal_kg === null || $prot_kg === null || $gras_kg === null || $carb_kg === null) {
-    $response['message'] = 'Todos los campos son obligatorios.';
+if ($nombre === '' || $kcal_kg === '' || $prot_kg === '' || $gras_kg === '' || $carb_kg === '') {
+    $response['message'] = "Todos los campos son obligatorios.";
     echo json_encode($response);
     exit;
 }
 
-// Validar numéricos
-if (!is_numeric($kcal_kg) || !is_numeric($prot_kg) || !is_numeric($gras_kg) || !is_numeric($carb_kg)) {
-    $response['message'] = 'Los valores nutricionales deben ser numéricos.';
-    echo json_encode($response);
-    exit;
-}
+$check = $conn->prepare("SELECT id FROM alimento WHERE nombre = ?");
+$check->bind_param("s", $nombre);
+$check->execute();
+$res = $check->get_result();
 
-// Verificar duplicado
-$chk = $conn->prepare("SELECT id FROM alimento WHERE nombre = ?");
-$chk->bind_param("s", $nombre);
-$chk->execute();
-$res = $chk->get_result();
 if ($res->num_rows > 0) {
-    echo json_encode(['success' => false, 'message' => 'Ya existe un alimento con este nombre.']);
+    $response['message'] = "Ya existe un alimento con ese nombre.";
+    echo json_encode($response);
     exit;
 }
-$chk->close();
 
 $id = uniqid();
 
 $sql = "INSERT INTO alimento (id, nombre, kcal_kg, prot_kg, gras_kg, carb_kg)
         VALUES (?, ?, ?, ?, ?, ?)";
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ssdddd", $id, $nombre, $kcal_kg, $prot_kg, $gras_kg, $carb_kg);
 
 if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'message' => 'Alimento registrado correctamente.', 'id' => $id]);
+    $response['success'] = true;
+    $response['message'] = "Alimento registrado correctamente.";
+    $response['id'] = $id;
 } else {
-    echo json_encode(['success' => false, 'message' => 'Error al registrar: ' . $stmt->error]);
+    $response['message'] = "Error al registrar: " . $stmt->error;
 }
 
 $stmt->close();
 $conn->close();
+
+echo json_encode($response, JSON_UNESCAPED_UNICODE);

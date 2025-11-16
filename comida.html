@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vita - Registro de Comida</title>
+     <link rel="icon" type="image/png" href="https://i.ibb.co/4w2X5SgB/vita-degradado.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="JS/config.js"></script>
+    <link rel="stylesheet" href="CSS/comida.css">
+</head>
+<body class="theme-default">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="mobile-header-content">
+            <div class="mobile-logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Vita</h1>
+            </div>
+            <button class="menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Overlay para móviles -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Vita</h1>
+            </div>
+            
+            <ul class="menu">
+                <li class="menu-item">
+                    <a href="dashboard.html" class="menu-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="metas.html" class="menu-link">
+                        <i class="fas fa-tasks"></i>
+                        <span>Mis Metas</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a href="comida.html" class="menu-link">
+                        <i class="fas fa-utensils"></i>
+                        <span>Comida</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="actividades.html" class="menu-link">
+                        <i class="fas fa-running"></i>
+                        <span>Actividades</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="misiones.html" class="menu-link">
+                        <i class="fas fa-trophy"></i>
+                        <span>Misiones Diarias</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="perfil.html" class="menu-link">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="configuracion.html" class="menu-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1 class="page-title">Registro de Comida</h1>
+                <button class="btn btn-primary" onclick="openFoodModal()">
+                    <i class="fas fa-plus"></i>
+                    Registrar Comida
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Tu Consumo de Hoy</h2>
+                </div>
+                <div class="nutrition-grid">
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="totalCalories">0</div>
+                        <div class="nutrition-label">Calorías</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="totalProtein">0</div>
+                        <div class="nutrition-label">Proteínas (g)</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="totalCarbs">0</div>
+                        <div class="nutrition-label">Carbohidratos (g)</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="totalFat">0</div>
+                        <div class="nutrition-label">Grasas (g)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="openTab('alimentos')">Alimentos Base</button>
+                <button class="tab" onclick="openTab('personalizados')">Mis Alimentos</button>
+                <button class="tab" onclick="openTab('registros')">Mis Registros</button>
+            </div>
+
+            <div id="alimentos" class="tab-content active">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Alimentos Disponibles</h2>
+                    </div>
+                    <div id="alimentosList">
+                        <div class="empty-state">
+                            <i class="fas fa-utensils"></i>
+                            <h3>Cargando alimentos...</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="personalizados" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Mis Alimentos Personalizados</h2>
+                        <button class="btn btn-outline" onclick="openCustomFoodModal()">
+                            <i class="fas fa-plus"></i>
+                            Nuevo Alimento
+                        </button>
+                    </div>
+                    <div id="alimentosPersonalizadosList">
+                        <div class="empty-state">
+                            <i class="fas fa-utensils"></i>
+                            <h3>No tienes alimentos personalizados</h3>
+                            <p>Crea tu primer alimento personalizado para registrarlo más fácilmente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="registros" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Historial de Comidas</h2>
+                    </div>
+                    <div id="registrosList">
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <h3>No hay registros de comida</h3>
+                            <p>Comienza registrando tu primera comida.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para registrar comida -->
+    <div id="foodModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Registrar Comida</h3>
+                <button class="close" onclick="closeFoodModal()">&times;</button>
+            </div>
+            <form id="foodForm">
+                <input type="hidden" id="registroId">
+                
+                <div class="form-group">
+                    <label class="form-label" for="alimentoSelect">Alimento</label>
+                    <select class="form-select" id="alimentoSelect" required>
+                        <option value="">Selecciona un alimento</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="porcion">Porción (kg)</label>
+                    <input type="number" class="form-control" id="porcion" step="0.001" required placeholder="Ej: 0.150" min="0.001" max="10">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="fechaHora">Fecha y Hora</label>
+                    <input type="datetime-local" class="form-control" id="fechaHora" required>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label" for="calorias">Calorías</label>
+                        <input type="number" class="form-control" id="calorias" step="0.01" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="proteinas">Proteínas (g)</label>
+                        <input type="number" class="form-control" id="proteinas" step="0.01" required readonly>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label" for="carbohidratos">Carbohidratos (g)</label>
+                        <input type="number" class="form-control" id="carbohidratos" step="0.01" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="grasas">Grasas (g)</label>
+                        <input type="number" class="form-control" id="grasas" step="0.01" required readonly>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeFoodModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Registrar Comida</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para alimento personalizado -->
+    <div id="customFoodModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Nuevo Alimento Personalizado</h3>
+                <button class="close" onclick="closeCustomFoodModal()">&times;</button>
+            </div>
+            <form id="customFoodForm">
+                <div class="form-group">
+                    <label class="form-label" for="customNombre">Nombre del Alimento</label>
+                    <input type="text" class="form-control" id="customNombre" required placeholder="Ej: Mi Ensalada Especial">
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label" for="customCalorias">Calorías por kg</label>
+                        <input type="number" class="form-control" id="customCalorias" step="0.01" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="customProteinas">Proteínas por kg (g)</label>
+                        <input type="number" class="form-control" id="customProteinas" step="0.01" required min="0">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label" for="customCarbohidratos">Carbohidratos por kg (g)</label>
+                        <input type="number" class="form-control" id="customCarbohidratos" step="0.01" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="customGrasas">Grasas por kg (g)</label>
+                        <input type="number" class="form-control" id="customGrasas" step="0.01" required min="0">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeCustomFoodModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Crear Alimento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="JS/comida.js"></script>
+</body>
+</html>

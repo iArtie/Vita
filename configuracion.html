@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vita - Configuración</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/4w2X5SgB/vita-degradado.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/configuracion.css">
+</head>
+<body class="theme-default">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="mobile-header-content">
+            <div class="mobile-logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Vita</h1>
+            </div>
+            <button class="menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Overlay para móviles -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Vita</h1>
+            </div>
+            
+            <ul class="menu">
+                <li class="menu-item">
+                    <a href="dashboard.html" class="menu-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="metas.html" class="menu-link">
+                        <i class="fas fa-tasks"></i>
+                        <span>Mis Metas</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="comida.html" class="menu-link">
+                        <i class="fas fa-utensils"></i>
+                        <span>Comida</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="actividades.html" class="menu-link">
+                        <i class="fas fa-running"></i>
+                        <span>Actividades</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="misiones.html" class="menu-link">
+                        <i class="fas fa-trophy"></i>
+                        <span>Misiones Diarias</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="perfil.html" class="menu-link">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a href="configuracion.html" class="menu-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1 class="page-title">Configuración</h1>
+                <button class="btn btn-primary" onclick="saveSettings()">
+                    <i class="fas fa-save"></i>
+                    Guardar Configuración
+                </button>
+            </div>
+
+            <div id="alert" class="alert"></div>
+
+            <!-- Apariencia -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Apariencia</h2>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Tema de Color</label>
+                    <div class="theme-selector">
+                        <div class="theme-option theme-default active" onclick="selectTheme('default')">
+                            <div class="theme-preview"></div>
+                            <div>Predeterminado</div>
+                        </div>
+                        <div class="theme-option theme-blue" onclick="selectTheme('blue')">
+                            <div class="theme-preview"></div>
+                            <div>Azul</div>
+                        </div>
+                        <div class="theme-option theme-red" onclick="selectTheme('red')">
+                            <div class="theme-preview"></div>
+                            <div>Rojo</div>
+                        </div>
+                        <div class="theme-option theme-green" onclick="selectTheme('green')">
+                            <div class="theme-preview"></div>
+                            <div>Verde</div>
+                        </div>
+                        <div class="theme-option theme-gold" onclick="selectTheme('gold')">
+                            <div class="theme-preview"></div>
+                            <div>Dorado</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toggle-container">
+                    <div class="toggle-info">
+                        <div class="toggle-title">Modo Oscuro</div>
+                        <div class="toggle-description">Activa el modo oscuro para una experiencia visual más cómoda en entornos con poca luz</div>
+                    </div>
+                    <div class="toggle-switch" id="darkModeToggle" onclick="toggleDarkMode()"></div>
+                </div>
+            </div>
+
+            <!-- Gestión de Datos -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Gestión de Datos</h2>
+                </div>
+                
+                <div class="data-actions">
+                    <div class="data-action" onclick="exportData()">
+                        <i class="fas fa-file-export"></i>
+                        <div>Exportar Datos</div>
+                        <small>Descarga tus datos en formato CSV</small>
+                    </div>
+                    <div class="data-action" onclick="resetConfiguration()">
+                        <i class="fas fa-undo"></i>
+                        <div>Restablecer Configuración</div>
+                        <small>Vuelve a la configuración por defecto</small>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="JS/config.js"></script>
+    <script src="JS/configuracion.js"></script>
+</body>
+</html>

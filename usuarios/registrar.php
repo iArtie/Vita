@@ -10,7 +10,6 @@ include('../includes/functions.php');
 $response = ['success' => false, 'message' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $nombre = trim($_POST['nombre']);
     $apellido = trim($_POST['apellido']);
     $username = trim($_POST['username']);
@@ -21,11 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
     $rol = 'cliente';
+    $avatar_id = $_POST['avatar_id'] ?? 'male_avatar_01'; // Valor por defecto
 
     $edad = calcularEdad($fecha_nacimiento);
-    $id = uniqid();
+    $usuario_id = uniqid();
+    $detalle_id = uniqid();
 
-    
+    // Verificar duplicados
     $checkSql = "SELECT * FROM usuario WHERE username = ? OR email = ?";
     $stmtCheck = $conn->prepare($checkSql);
     $stmtCheck->bind_param("ss", $username, $email);
@@ -43,31 +44,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
- 
-    $sql = "INSERT INTO usuario (id, nombre, apellido, username, fecha_nacimiento, edad, genero, altura_cm, peso_kg, email, password_hash, rol)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        $response['message'] = "Error en prepare: " . $conn->error;
-        echo json_encode($response);
-        exit;
-    }
+    // Iniciar transacción
+    $conn->begin_transaction();
 
-    $stmt->bind_param("sssssisddsss", $id, $nombre, $apellido, $username, $fecha_nacimiento, $edad, $genero, $altura_cm, $peso_kg, $email, $password, $rol);
+    try {
+        // Insertar usuario
+        $sqlUsuario = "INSERT INTO usuario (id, nombre, apellido, username, fecha_nacimiento, edad, genero, altura_cm, peso_kg, email, password_hash, rol)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmtUsuario = $conn->prepare($sqlUsuario);
+        $stmtUsuario->bind_param("sssssisddsss", $usuario_id, $nombre, $apellido, $username, $fecha_nacimiento, $edad, $genero, $altura_cm, $peso_kg, $email, $password, $rol);
+        
+        if (!$stmtUsuario->execute()) {
+            throw new Exception("Error al registrar usuario: " . $stmtUsuario->error);
+        }
 
-    if ($stmt->execute()) {
+        // Insertar detalle_usuario con avatar_id como VARCHAR
+        $sqlDetalle = "INSERT INTO detalle_usuario (id, usuario_id, avatar_id, racha, level, points, completed_missions)
+                      VALUES (?, ?, ?, 0, 1, 0, 0)";
+        $stmtDetalle = $conn->prepare($sqlDetalle);
+        $stmtDetalle->bind_param("sss", $detalle_id, $usuario_id, $avatar_id);
+        
+        if (!$stmtDetalle->execute()) {
+            throw new Exception("Error al crear detalle de usuario: " . $stmtDetalle->error);
+        }
+
+        // Confirmar transacción
+        $conn->commit();
+        
         $response['success'] = true;
         $response['message'] = "Usuario registrado correctamente.";
-    } else {
-        $response['message'] = "Error al registrar usuario: " . $stmt->error;
+        $response['usuario_id'] = $usuario_id;
+
+    } catch (Exception $e) {
+        // Revertir transacción en caso de error
+        $conn->rollback();
+        $response['message'] = $e->getMessage();
     }
 
-    $stmt->close();
+    $stmtUsuario->close();
+    if (isset($stmtDetalle)) $stmtDetalle->close();
     $conn->close();
-
-    echo json_encode($response);
 
 } else {
     $response['message'] = "Método no permitido.";
-    echo json_encode($response);
 }
+
+echo json_encode($response);
+?>
