@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vita - Admin Dashboard</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/4w2X5SgB/vita-degradado.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="JS/config.js"></script>
+    <link rel="stylesheet" href="CSS/admin.css">
+</head>
+<body class="theme-default">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="mobile-header-content">
+            <div class="mobile-logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Vita Admin</h1>
+            </div>
+            <div class="mobile-user">
+                <div class="user-info">
+                    <div class="user-name" id="mobileUserName">Administrador</div>
+                    <div class="user-role" id="mobileUserRole">Admin</div>
+                </div>
+                <img id="mobileUserAvatar" class="mobile-avatar" src="" alt="Avatar">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para móviles -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Vita Admin</h1>
+            </div>
+            
+            <ul class="menu">
+                <li class="menu-item active">
+                    <button class="menu-link" data-section="usuarios">
+                        <i class="fas fa-users"></i>
+                        <span>Usuarios</span>
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button class="menu-link" data-section="misiones">
+                        <i class="fas fa-tasks"></i>
+                        <span>Misiones</span>
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button class="menu-link" data-section="alimentos">
+                        <i class="fas fa-apple-alt"></i>
+                        <span>Alimentos</span>
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button class="menu-link" data-section="perfil">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Mi Perfil</span>
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button class="menu-link" data-section="configuracion">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button class="menu-link" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </button>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="header">
+               
+                <div class="user-profile">
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Administrador</div>
+                        <div class="user-role" id="userRole">Admin</div>
+                    </div>
+                    <img id="userAvatar" class="avatar" src="" alt="Avatar">
+                </div>
+            </div>
+
+            <!-- Alert for messages -->
+            <div id="resultado"></div>
+
+            <!-- Stats Cards -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Usuarios</h3>
+                        <div class="card-icon bg-primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number" id="totalUsuarios">0</div>
+                    <div class="stat-label">Usuarios registrados</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Misiones</h3>
+                        <div class="card-icon bg-success">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number" id="totalMisiones">0</div>
+                    <div class="stat-label">Misiones activas</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Alimentos</h3>
+                        <div class="card-icon bg-warning">
+                            <i class="fas fa-apple-alt"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number" id="totalAlimentos">0</div>
+                    <div class="stat-label">Alimentos disponibles</div>
+                </div>
+            </div>
+
+            <!-- Sección Usuarios -->
+            <section id="section-usuarios" class="section active">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Gestión de Usuarios</h2>
+                    </div>
+                    <div class="table-content">
+                        <table id="usuariosTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Género</th>
+                                    <th>Altura (cm)</th>
+                                    <th>Peso (kg)</th>
+                                    <th>Fecha Nac.</th>
+                                    <th>Edad</th>
+                                    <th>Rol</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usuariosTableBody">
+                                <!-- Los usuarios se cargarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Misiones -->
+            <section id="section-misiones" class="section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Gestión de Misiones</h2>
+                        <button id="btnAgregarMision" class="btn btn-primary">Agregar Misión</button>
+                    </div>
+                    <div class="table-content">
+                        <table id="misionesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Periodicidad</th>
+                                    <th>Puntos</th>
+                                    <th>Reglas</th>
+                                    <th>Vigente</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="misionesTableBody">
+                                <!-- Las misiones se cargarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Alimentos -->
+            <section id="section-alimentos" class="section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Gestión de Alimentos</h2>
+                        <button id="btnAgregarAlimento" class="btn btn-primary">Agregar Alimento</button>
+                    </div>
+                    <div class="table-content">
+                        <table id="alimentosTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Kcal/kg</th>
+                                    <th>Proteínas/kg</th>
+                                    <th>Grasas/kg</th>
+                                    <th>Carbohidratos/kg</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alimentosTableBody">
+                                <!-- Los alimentos se cargarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Perfil -->
+            <section id="section-perfil" class="section">
+                <div class="profile-layout">
+                    <!-- Avatar Section -->
+                    <div class="card">
+                        <div class="avatar-section">
+                            <div class="avatar-preview">
+                                <img id="avatarPreview" class="avatar-image" src="" alt="Avatar">
+                                <div class="avatar-name" id="previewUsername">Administrador</div>
+                                <div class="avatar-level" id="previewLevel">Administrador</div>
+                                <div class="admin-badge">
+                                    <i class="fas fa-shield-alt"></i>
+                                    Administrador
+                                </div>
+                            </div>
+
+                            <div class="avatar-tabs">
+                                <button class="avatar-tab active" onclick="switchAvatarTab('male')">
+                                    <i class="fas fa-mars"></i>
+                                    Masculinos
+                                </button>
+                                <button class="avatar-tab" onclick="switchAvatarTab('female')">
+                                    <i class="fas fa-venus"></i>
+                                    Femeninos
+                                </button>
+                            </div>
+
+                            <div class="avatar-grid" id="avatarGrid">
+                                <!-- Los avatares se cargarán dinámicamente -->
+                            </div>
+                            <input type="hidden" id="selectedAvatar" value="">
+                        </div>
+                    </div>
+
+                    <!-- Form Section -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Información Personal</h2>
+                            <button class="btn btn-primary" onclick="saveProfile()">
+                                <i class="fas fa-save"></i>
+                                Guardar Cambios
+                            </button>
+                        </div>
+
+                        <form id="profileForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="nombre">Nombre</label>
+                                    <input type="text" class="form-control" id="nombre" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="apellido">Apellido</label>
+                                    <input type="text" class="form-control" id="apellido" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="username">Nombre de Usuario</label>
+                                    <input type="text" class="form-control" id="username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="email">Correo Electrónico</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="genero">Género</label>
+                                    <select class="form-control" id="genero" required>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Femenino</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="fechaNacimiento">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control" id="fechaNacimiento" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="altura">Altura (cm)</label>
+                                    <input type="number" class="form-control" id="altura" step="0.1" min="100" max="250" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="peso">Peso (kg)</label>
+                                    <input type="number" class="form-control" id="peso" step="0.1" min="30" max="300" required>
+                                </div>
+                            </div>
+
+                            <!-- Password Change Section -->
+                            <div class="password-section">
+                                <div class="password-toggle" onclick="togglePasswordSection()">
+                                    <div class="password-toggle-switch" id="passwordToggle"></div>
+                                    <span>Cambiar Contraseña</span>
+                                </div>
+
+                                <div id="passwordFields" style="display: none;">
+                                    <div class="form-group">
+                                        <label class="form-label" for="currentPassword">Contraseña Actual</label>
+                                        <input type="password" class="form-control" id="currentPassword">
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="newPassword">Nueva Contraseña</label>
+                                            <input type="password" class="form-control" id="newPassword">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="confirmPassword">Confirmar Contraseña</label>
+                                            <input type="password" class="form-control" id="confirmPassword">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Stats Section -->
+                        <div class="card-header" style="margin-top: 2rem;">
+                            <h2 class="card-title">Mis Estadísticas</h2>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="statLevel">1</div>
+                                <div class="stat-label">Nivel</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="statPoints">0</div>
+                                <div class="stat-label">Puntos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="statRacha">0</div>
+                                <div class="stat-label">Días Consecutivos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="statMissions">0</div>
+                                <div class="stat-label">Misiones Completadas</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Configuración -->
+            <section id="section-configuracion" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Apariencia</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tema de Color</label>
+                        <div class="theme-selector">
+                            <div class="theme-option theme-default active" onclick="selectTheme('default')">
+                                <div class="theme-preview"></div>
+                                <div>Predeterminado</div>
+                            </div>
+                            <div class="theme-option theme-blue" onclick="selectTheme('blue')">
+                                <div class="theme-preview"></div>
+                                <div>Azul</div>
+                            </div>
+                            <div class="theme-option theme-red" onclick="selectTheme('red')">
+                                <div class="theme-preview"></div>
+                                <div>Rojo</div>
+                            </div>
+                            <div class="theme-option theme-green" onclick="selectTheme('green')">
+                                <div class="theme-preview"></div>
+                                <div>Verde</div>
+                            </div>
+                            <div class="theme-option theme-gold" onclick="selectTheme('gold')">
+                                <div class="theme-preview"></div>
+                                <div>Dorado</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="toggle-container">
+                        <div class="toggle-info">
+                            <div class="toggle-title">Modo Oscuro</div>
+                            <div class="toggle-description">Activa el modo oscuro para una experiencia visual más cómoda en entornos con poca luz</div>
+                        </div>
+                        <div class="toggle-switch" id="darkModeToggle" onclick="toggleDarkMode()"></div>
+                    </div>
+                </div>
+
+                <!-- Gestión de Datos -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Gestión de Datos</h2>
+                    </div>
+                    
+                    <div class="data-actions">
+                        <div class="data-action" onclick="exportData()">
+                            <i class="fas fa-file-export"></i>
+                            <div>Exportar Datos</div>
+                            <small>Descarga tus datos en formato CSV</small>
+                        </div>
+                        <div class="data-action" onclick="resetConfiguration()">
+                            <i class="fas fa-undo"></i>
+                            <div>Restablecer Configuración</div>
+                            <small>Vuelve a la configuración por defecto</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Editar Usuario -->
+    <div id="modalEditarUsuario" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Usuario</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="editarForm">
+                <div class="modal-body">
+                    <input type="hidden" id="editId" name="id">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="editNombre">Nombre</label>
+                            <input type="text" id="editNombre" name="nombre" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="editApellido">Apellido</label>
+                            <input type="text" id="editApellido" name="apellido" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="editUsername">Username</label>
+                            <input type="text" id="editUsername" name="username" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="editEmail">Email</label>
+                            <input type="email" id="editEmail" name="email" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="editGenero">Género</label>
+                            <select id="editGenero" name="genero" class="form-control" required>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="editAltura">Altura (cm)</label>
+                            <input type="number" id="editAltura" name="altura_cm" step="0.01" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="editPeso">Peso (kg)</label>
+                            <input type="number" id="editPeso" name="peso_kg" step="0.01" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelarEdicion" class="btn btn-outline">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Misiones -->
+    <div id="modalMisiones" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="formTitulo">Agregar Nueva Misión</h3>
+                <button class="modal-close modal-close-misiones">&times;</button>
+            </div>
+            <form id="misionesForm">
+                <div class="modal-body">
+                    <input type="hidden" id="misionesId" name="id">
+                    <input type="hidden" name="creado_por" value="admin">
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="misionesNombre">Nombre de la Misión</label>
+                        <input type="text" id="misionesNombre" name="nombre" class="form-control" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="misionesPeriodicidad">Periodicidad</label>
+                            <select id="misionesPeriodicidad" name="periodicidad" class="form-control" required>
+                                <option value="diaria">Diaria</option>
+                                <option value="semanal">Semanal</option>
+                                <option value="mensual">Mensual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="misionesPuntos">Puntos</label>
+                            <input type="number" id="misionesPuntos" name="puntos" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="misionesReglas">Reglas</label>
+                        <textarea id="misionesReglas" name="reglas" class="form-control" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="misionesVigente">Estado</label>
+                        <select id="misionesVigente" name="vigente" class="form-control" required>
+                            <option value="1">Activa</option>
+                            <option value="0">Inactiva</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelarMision" class="btn btn-outline">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Misión</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Alimentos -->
+    <div id="modalAlimentos" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="formTituloAlimento">Agregar Nuevo Alimento</h3>
+                <button class="modal-close modal-close-alimentos">&times;</button>
+            </div>
+            <form id="alimentosForm">
+                <div class="modal-body">
+                    <input type="hidden" id="alimentosId" name="id">
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="alimentosNombre">Nombre del Alimento</label>
+                        <input type="text" id="alimentosNombre" name="nombre" class="form-control" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="alimentosKcal">Kcal por kg</label>
+                            <input type="number" id="alimentosKcal" name="kcal_kg" step="0.01" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="alimentosProt">Proteínas por kg</label>
+                            <input type="number" id="alimentosProt" name="prot_kg" step="0.01" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="alimentosGras">Grasas por kg</label>
+                            <input type="number" id="alimentosGras" name="gras_kg" step="0.01" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="alimentosCarb">Carbohidratos por kg</label>
+                            <input type="number" id="alimentosCarb" name="carb_kg" step="0.01" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelarAlimento" class="btn btn-outline">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Alimento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="JS/admin.js"></script>
+    <script src="JS/usuarios_admin.js"></script>
+    <script src="JS/misiones_admin.js"></script>
+    <script src="JS/alimentos_admin.js"></script>
+</body>
+</html>
