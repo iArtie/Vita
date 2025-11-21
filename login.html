@@ -150,6 +150,34 @@
                                 </div>
                             </div>
 
+                            <!-- Campos para metas automáticas -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-control" id="regObjetivo" name="objetivo" required>
+                                            <option value="">Seleccionar objetivo...</option>
+                                            <option value="perder_peso">Perder Peso</option>
+                                            <option value="mantener_peso">Mantener Peso</option>
+                                            <option value="ganar_masa">Ganar Masa Muscular</option>
+                                        </select>
+                                        <label for="regObjetivo"><i class="fas fa-bullseye me-2"></i>Objetivo Principal</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-control" id="regNivelActividad" name="nivel_actividad" required>
+                                            <option value="">Seleccionar...</option>
+                                            <option value="sedentario">Sedentario</option>
+                                            <option value="ligero">Ligero</option>
+                                            <option value="moderado">Moderado</option>
+                                            <option value="activo">Activo</option>
+                                            <option value="muy_activo">Muy Activo</option>
+                                        </select>
+                                        <label for="regNivelActividad"><i class="fas fa-running me-2"></i>Nivel de Actividad</label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-floating">
                                 <input type="password" class="form-control" id="regPassword" name="password" placeholder="Contraseña" required>
                                 <label for="regPassword"><i class="fas fa-lock me-2"></i>Contraseña</label>

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cerrar sidebar al hacer clic en un enlace (móviles)
     document.querySelectorAll('.menu-link').forEach(link => {
         link.addEventListener('click', function(e) {
-            if (!e.target.getAttribute('onclick') && window.innerWidth <= 992) {
+            if (!e.target.geFFtAttribute('onclick') && window.innerWidth <= 992) {
                 toggleSidebar();
             }
         });

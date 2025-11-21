@@ -56,7 +56,7 @@ class ThemeManager {
         };
 
         const currentTheme = themes[this.currentTheme] || themes['default'];
-        
+
         return `
             :root {
                 --primary: ${currentTheme.primary};
@@ -132,10 +132,10 @@ class ThemeManager {
         const bodyClass = document.body.className;
         const themeClassRegex = /theme-\w+/g;
         document.body.className = bodyClass.replace(themeClassRegex, '').replace(/\s+/g, ' ').trim();
-        
+
         // Agregar nueva clase de tema
         document.body.classList.add(`theme-${this.currentTheme}`);
-        
+
         // Re-inyectar estilos
         this.injectThemeStyles();
     }
@@ -152,13 +152,13 @@ class ThemeManager {
         this.currentTheme = themeName;
         localStorage.setItem('vita_theme', themeName);
         this.applyTheme();
-        
+
         // Actualizar la selección en la UI
         updateThemeSelectionUI(themeName);
-        
+
         // Disparar evento personalizado para que otras páginas se actualicen
-        window.dispatchEvent(new CustomEvent('themeChanged', { 
-            detail: { theme: themeName } 
+        window.dispatchEvent(new CustomEvent('themeChanged', {
+            detail: { theme: themeName }
         }));
     }
 
@@ -167,9 +167,9 @@ class ThemeManager {
         localStorage.setItem('vita_dark_mode', this.darkMode);
         this.applyDarkMode();
         this.applyTheme();
-        
-        window.dispatchEvent(new CustomEvent('darkModeChanged', { 
-            detail: { darkMode: this.darkMode } 
+
+        window.dispatchEvent(new CustomEvent('darkModeChanged', {
+            detail: { darkMode: this.darkMode }
         }));
     }
 
@@ -178,9 +178,9 @@ class ThemeManager {
         localStorage.setItem('vita_dark_mode', enabled);
         this.applyDarkMode();
         this.applyTheme();
-        
-        window.dispatchEvent(new CustomEvent('darkModeChanged', { 
-            detail: { darkMode: enabled } 
+
+        window.dispatchEvent(new CustomEvent('darkModeChanged', {
+            detail: { darkMode: enabled }
         }));
     }
 
@@ -199,7 +199,7 @@ function updateThemeSelectionUI(themeName) {
         themeOptions.forEach(option => {
             option.classList.remove('active');
         });
-        
+
         const currentThemeOption = document.querySelector(`.theme-${themeName}`);
         if (currentThemeOption) {
             currentThemeOption.classList.add('active');
@@ -212,7 +212,7 @@ class CustomAlert {
     static show(message, type = 'info', duration = 5000) {
         this.removeExistingAlerts();
         this.ensureAlertStyles();
-        
+
         const alert = document.createElement('div');
         alert.className = `custom-alert custom-alert-${type}`;
         alert.innerHTML = `
@@ -224,9 +224,9 @@ class CustomAlert {
                 </button>
             </div>
         `;
-        
+
         document.body.appendChild(alert);
-        
+
         setTimeout(() => {
             if (alert.parentElement) {
                 alert.remove();
@@ -353,7 +353,7 @@ function selectTheme(themeName, showAlert = true) {
     if (typeof themeManager !== 'undefined') {
         themeManager.setTheme(themeName);
     }
-    
+
     if (showAlert) {
         showAlertMessage('Tema cambiado correctamente', 'success');
     }
@@ -362,11 +362,11 @@ function selectTheme(themeName, showAlert = true) {
 function toggleDarkMode() {
     const toggle = document.getElementById('darkModeToggle');
     const isCurrentlyActive = toggle.classList.contains('active');
-    
+
     if (typeof themeManager !== 'undefined') {
         themeManager.setDarkMode(!isCurrentlyActive);
     }
-    
+
     toggle.classList.toggle('active');
     showAlertMessage('Modo oscuro ' + (!isCurrentlyActive ? 'activado' : 'desactivado'), 'success');
 }
@@ -392,12 +392,12 @@ function showAlertMessage(message, type) {
 // Inicialización global mejorada
 function initializeThemeSystem() {
     window.themeManager = new ThemeManager();
-    
+
     const savedTheme = localStorage.getItem('vita_theme') || 'default';
     const darkModeEnabled = localStorage.getItem('vita_dark_mode') === 'true';
-    
+
     updateThemeSelectionUI(savedTheme);
-    
+
     const darkModeToggle = document.getElementById('darkModeToggle');
     if (darkModeToggle) {
         if (darkModeEnabled) {
@@ -409,7 +409,7 @@ function initializeThemeSystem() {
 }
 
 // Inicializar cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeThemeSystem();
 });
 

@@ -16,13 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Navegación entre secciones
     menuLinks.forEach(link => {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function () {
             const sectionId = this.getAttribute('data-section');
-            
+
             // Remover active de todos los items del menú y secciones
             menuItems.forEach(item => item.classList.remove('active'));
             sections.forEach(section => section.classList.remove('active'));
-            
+
             // Activar el item del menú y sección correspondiente
             this.parentElement.classList.add('active');
             document.getElementById(`section-${sectionId}`).classList.add('active');
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalClose.addEventListener('click', ocultarModal);
 
     // Cerrar modal al hacer click fuera del contenido
-    modalEditarUsuario.addEventListener('click', function(e) {
+    modalEditarUsuario.addEventListener('click', function (e) {
         if (e.target === modalEditarUsuario) {
             ocultarModal();
         }
@@ -52,12 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Función para cargar usuarios
     function cargarUsuarios() {
         fetch('/usuarios/obtener.php')
-        .then(res => res.json())
-        .then(data => {
-            tablaUsuarios.innerHTML = '';
-            data.forEach(usuario => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
+            .then(res => res.json())
+            .then(data => {
+                tablaUsuarios.innerHTML = '';
+                data.forEach(usuario => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
                     <td>${usuario.id}</td>
                     <td>${usuario.nombre}</td>
                     <td>${usuario.apellido}</td>
@@ -74,79 +74,79 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button data-id="${usuario.id}" class="eliminarBtn">Eliminar</button>
                     </td>
                 `;
-                tablaUsuarios.appendChild(tr);
-            });
+                    tablaUsuarios.appendChild(tr);
+                });
 
-            // Actualizar total de usuarios
-            document.getElementById('totalUsuarios').textContent = data.length;
+                // Actualizar total de usuarios
+                document.getElementById('totalUsuarios').textContent = data.length;
 
-            // Botones de editar
-            document.querySelectorAll('.editarBtn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const usuario = data.find(u => u.id === btn.dataset.id);
-                    if (usuario) {
-                        document.getElementById('editId').value = usuario.id;
-                        document.getElementById('editNombre').value = usuario.nombre;
-                        document.getElementById('editApellido').value = usuario.apellido;
-                        document.getElementById('editUsername').value = usuario.username;
-                        document.getElementById('editEmail').value = usuario.email;
-                        document.getElementById('editGenero').value = usuario.genero;
-                        document.getElementById('editAltura').value = usuario.altura_cm;
-                        document.getElementById('editPeso').value = usuario.peso_kg;
-                        resultado.textContent = '';
-                        mostrarModal();
-                    }
+                // Botones de editar
+                document.querySelectorAll('.editarBtn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const usuario = data.find(u => u.id === btn.dataset.id);
+                        if (usuario) {
+                            document.getElementById('editId').value = usuario.id;
+                            document.getElementById('editNombre').value = usuario.nombre;
+                            document.getElementById('editApellido').value = usuario.apellido;
+                            document.getElementById('editUsername').value = usuario.username;
+                            document.getElementById('editEmail').value = usuario.email;
+                            document.getElementById('editGenero').value = usuario.genero;
+                            document.getElementById('editAltura').value = usuario.altura_cm;
+                            document.getElementById('editPeso').value = usuario.peso_kg;
+                            resultado.textContent = '';
+                            mostrarModal();
+                        }
+                    });
+                });
+
+                // Botones de eliminar
+                document.querySelectorAll('.eliminarBtn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (!confirm('¿Seguro que quieres eliminar este usuario?')) return;
+                        const id = btn.dataset.id;
+                        const formData = new FormData();
+                        formData.append('id', id);
+
+                        fetch('/usuarios/eliminar.php', { method: 'POST', body: formData })
+                            .then(res => res.json())
+                            .then(data => {
+                                resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
+                                resultado.style.color = data.success ? "green" : "red";
+                                if (data.success) cargarUsuarios();
+                            })
+                            .catch(err => {
+                                resultado.textContent = "Error: " + err;
+                                resultado.style.color = "red";
+                            });
+                    });
                 });
             });
-
-            // Botones de eliminar
-            document.querySelectorAll('.eliminarBtn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (!confirm('¿Seguro que quieres eliminar este usuario?')) return;
-                    const id = btn.dataset.id;
-                    const formData = new FormData();
-                    formData.append('id', id);
-
-                    fetch('/usuarios/eliminar.php', { method: 'POST', body: formData })
-                        .then(res => res.json())
-                        .then(data => {
-                            resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
-                            resultado.style.color = data.success ? "green" : "red";
-                            if (data.success) cargarUsuarios();
-                        })
-                        .catch(err => {
-                            resultado.textContent = "Error: " + err;
-                            resultado.style.color = "red";
-                        });
-                });
-            });
-        });
     }
 
     cargarUsuarios();
 
     // Editar usuario
     if (formEditar) {
-        formEditar.addEventListener('submit', function(e) {
+        formEditar.addEventListener('submit', function (e) {
             e.preventDefault();
             const formData = new FormData(formEditar);
             fetch('/usuarios/modificar.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(res => res.json())
-            .then(data => {
-                resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
-                resultado.style.color = data.success ? "green" : "red";
-                if (data.success) {
-                    ocultarModal();
-                    cargarUsuarios();
-                }
-            })
-            .catch(err => {
-                resultado.textContent = "Error: " + err;
-                resultado.style.color = "red";
-            });
+                .then(res => res.json())
+                .then(data => {
+                    resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
+                    resultado.style.color = data.success ? "green" : "red";
+                    if (data.success) {
+                        ocultarModal();
+                        cargarUsuarios();
+                    }
+                })
+                .catch(err => {
+                    resultado.textContent = "Error: " + err;
+                    resultado.style.color = "red";
+                });
         });
     }
 

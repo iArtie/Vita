@@ -1,12 +1,12 @@
 let currentUser = null;
 let sidebarOpen = false;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadUserData();
     loadSettings();
-    
+
     document.querySelectorAll('.menu-link').forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             if (!e.target.getAttribute('onclick') && window.innerWidth <= 992) {
                 toggleSidebar();
             }
@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
-    
+
     sidebarOpen = !sidebarOpen;
     sidebar.classList.toggle('active');
     overlay.style.display = sidebarOpen ? 'block' : 'none';
-    
+
     document.body.style.overflow = sidebarOpen ? 'hidden' : '';
 }
 
@@ -37,7 +37,7 @@ function loadUserData() {
 function loadSettings() {
     const savedTheme = localStorage.getItem('vita_theme') || 'default';
     selectTheme(savedTheme, false);
-    
+
     const darkModeEnabled = localStorage.getItem('vita_dark_mode') === 'true';
     const toggle = document.getElementById('darkModeToggle');
     if (darkModeEnabled) {
@@ -51,13 +51,13 @@ function selectTheme(themeName, showAlert = true) {
     document.querySelectorAll('.theme-option').forEach(option => {
         option.classList.remove('active');
     });
-    
+
     event.target.classList.add('active');
-    
+
     if (window.themeManager) {
         window.themeManager.setTheme(themeName);
     }
-    
+
     if (showAlert) {
         showAlertMessage('Tema cambiado correctamente', 'success');
     }
@@ -65,17 +65,17 @@ function selectTheme(themeName, showAlert = true) {
 
 function toggleDarkMode() {
     const toggle = document.getElementById('darkModeToggle');
-    
+
     if (window.themeManager) {
         window.themeManager.toggleDarkMode();
-        
+
         const isDarkMode = window.themeManager.darkMode;
         if (isDarkMode) {
             toggle.classList.add('active');
         } else {
             toggle.classList.remove('active');
         }
-        
+
         showAlertMessage('Modo oscuro ' + (isDarkMode ? 'activado' : 'desactivado'), 'success');
     }
 }
@@ -109,7 +109,7 @@ function resetConfiguration() {
             window.themeManager.setTheme('default');
             window.themeManager.setDarkMode(false);
         }
-        
+
         loadSettings();
         showAlertMessage('Configuración restablecida correctamente', 'success');
     }
@@ -135,7 +135,7 @@ function showAlertMessage(message, type) {
     }
 }
 
-window.addEventListener('resize', function() {
+window.addEventListener('resize', function () {
     if (window.innerWidth > 992 && sidebarOpen) {
         toggleSidebar();
     }

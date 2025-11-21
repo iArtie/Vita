@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function ocultarModalAlimentos() {
         modalAlimentos.style.display = 'none';
-        alimentosForm.reset();
+        alimentosForm.Freset();
         document.getElementById('alimentosId').value = '';
         formTituloAlimento.textContent = 'Agregar Nuevo Alimento';
     }
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCloseAlimentos.addEventListener('click', ocultarModalAlimentos);
 
     // Cerrar modal al hacer click fuera del contenido
-    modalAlimentos.addEventListener('click', function(e) {
+    modalAlimentos.addEventListener('click', function (e) {
         if (e.target === modalAlimentos) {
             ocultarModalAlimentos();
         }
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Crear o actualizar alimento
     if (alimentosForm) {
-        alimentosForm.addEventListener('submit', function(e) {
+        alimentosForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const formData = new FormData(alimentosForm);
             const id = formData.get('id');
@@ -98,19 +98,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 body: formData
             })
-            .then(res => res.json())
-            .then(data => {
-                resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
-                resultado.style.color = data.success ? "green" : "red";
-                if (data.success) {
-                    ocultarModalAlimentos();
-                    cargarAlimentos();
-                }
-            })
-            .catch(err => {
-                resultado.textContent = "Error: " + err;
-                resultado.style.color = "red";
-            });
+                .then(res => res.json())
+                .then(data => {
+                    resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
+                    resultado.style.color = data.success ? "green" : "red";
+                    if (data.success) {
+                        ocultarModalAlimentos();
+                        cargarAlimentos();
+                    }
+                })
+                .catch(err => {
+                    resultado.textContent = "Error: " + err;
+                    resultado.style.color = "red";
+                });
         });
     }
 
@@ -142,18 +142,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm("¿Seguro que deseas eliminar este alimento?")) return;
         fetch('/Alimentos/eliminar.php', {
             method: 'POST',
-            body: new URLSearchParams({id})
+            body: new URLSearchParams({ id })
         })
-        .then(res => res.json())
-        .then(data => {
-            resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
-            resultado.style.color = data.success ? "green" : "red";
-            if (data.success) cargarAlimentos();
-        })
-        .catch(err => {
-            resultado.textContent = "Error: " + err;
-            resultado.style.color = "red";
-        });
+            .then(res => res.json())
+            .then(data => {
+                resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
+                resultado.style.color = data.success ? "green" : "red";
+                if (data.success) cargarAlimentos();
+            })
+            .catch(err => {
+                resultado.textContent = "Error: " + err;
+                resultado.style.color = "red";
+            });
     }
 
     // Botón para agregar nuevo alimento

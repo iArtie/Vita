@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCloseMisiones.addEventListener('click', ocultarModalMisiones);
 
     // Cerrar modal al hacer click fuera del contenido
-    modalMisiones.addEventListener('click', function(e) {
+    modalMisiones.addEventListener('click', function (e) {
         if (e.target === modalMisiones) {
             ocultarModalMisiones();
         }
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Crear o actualizar misión
     if (misionesForm) {
-        misionesForm.addEventListener('submit', function(e) {
+        misionesForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const formData = new FormData(misionesForm);
             const id = formData.get('id');
@@ -97,19 +97,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 body: formData
             })
-            .then(res => res.json())
-            .then(data => {
-                resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
-                resultado.style.color = data.success ? "green" : "red";
-                if (data.success) {
-                    ocultarModalMisiones();
-                    cargarMisiones();
-                }
-            })
-            .catch(err => {
-                resultado.textContent = "Error: " + err;
-                resultado.style.color = "red";
-            });
+                .then(res => res.json())
+                .then(data => {
+                    resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
+                    resultado.style.color = data.success ? "green" : "red";
+                    if (data.success) {
+                        ocultarModalMisiones();
+                        cargarMisiones();
+                    }
+                })
+                .catch(err => {
+                    resultado.textContent = "Error: " + err;
+                    resultado.style.color = "red";
+                });
         });
     }
 
@@ -141,18 +141,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm("¿Seguro que deseas eliminar esta misión?")) return;
         fetch('/misiones/eliminar.php', {
             method: 'POST',
-            body: new URLSearchParams({id})
+            body: new URLSearchParams({ id })
         })
-        .then(res => res.json())
-        .then(data => {
-            resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
-            resultado.style.color = data.success ? "green" : "red";
-            if (data.success) cargarMisiones();
-        })
-        .catch(err => {
-            resultado.textContent = "Error: " + err;
-            resultado.style.color = "red";
-        });
+            .then(res => res.json())
+            .then(data => {
+                resultado.textContent = data.success ? "✅ " + data.message : "❌ " + data.message;
+                resultado.style.color = data.success ? "green" : "red";
+                if (data.success) cargarMisiones();
+            })
+            .catch(err => {
+                resultado.textContent = "Error: " + err;
+                resultado.style.color = "red";
+            });
     }
 
     // Botón para agregar nueva misión
