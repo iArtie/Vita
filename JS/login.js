@@ -7,13 +7,11 @@ let currentAvatarTab = 'male';
 function switchAvatarTab(gender) {
     currentAvatarTab = gender;
 
-    // Actualizar tabs activos
     document.querySelectorAll('.avatar-tab').forEach(tab => {
         tab.classList.remove('active');
     });
     event.target.classList.add('active');
 
-    // Cargar avatares del género seleccionado
     loadAvatars(gender);
 }
 
@@ -42,7 +40,6 @@ function loadAvatars(gender) {
         avatarGrid.appendChild(avatarElement);
     }
 
-    // Si no hay avatar seleccionado, seleccionar el primero
     if (!selectedAvatar && avatarGrid.firstChild) {
         const firstAvatar = avatarGrid.firstChild;
         const avatarName = `${gender}_avatar_01`;
@@ -53,27 +50,22 @@ function loadAvatars(gender) {
 
 // Función para seleccionar avatar
 function selectAvatar(avatarName, avatarPath) {
-    // Remover selección anterior
     document.querySelectorAll('.avatar-option').forEach(avatar => {
         avatar.classList.remove('selected');
     });
 
-    // Agregar selección nueva
     event.currentTarget.classList.add('selected');
 
-    // Actualizar preview
     const preview = document.getElementById('avatarPreview');
     const avatarNameDisplay = document.getElementById('avatarName');
 
     preview.src = avatarPath;
     preview.alt = avatarName;
 
-    // Mostrar nombre del avatar de forma más amigable
     const avatarType = avatarName.includes('male') ? 'Masculino' : 'Femenino';
     const avatarNumber = avatarName.split('_').pop();
     avatarNameDisplay.textContent = `Avatar ${avatarType} ${avatarNumber}`;
 
-    // Guardar selección
     selectedAvatar = avatarName;
     document.getElementById('regAvatar').value = selectedAvatar;
 }
@@ -92,11 +84,9 @@ function showRegister() {
     document.getElementById('loginAlert').innerHTML = '';
     document.getElementById('registerAlert').innerHTML = '';
 
-    // Cargar avatares masculinos por defecto
     loadAvatars('male');
     currentAvatarTab = 'male';
 
-    // Resetear tabs
     document.querySelectorAll('.avatar-tab').forEach((tab, index) => {
         tab.classList.remove('active');
         if (index === 0) tab.classList.add('active');
@@ -109,19 +99,16 @@ function verificarYRederigir(userId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Redirigir según el rol
                 if (data.rol === 'admin') {
                     setTimeout(() => {
                         window.location.href = 'index_admin.html';
                     }, 1000);
                 } else {
-                    // Por defecto asumimos que es cliente
                     setTimeout(() => {
                         window.location.href = 'dashboard.html';
                     }, 1000);
                 }
             } else {
-                // Si hay error al verificar el rol, redirigir al dashboard por defecto
                 console.error('Error verificando rol:', data.message);
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
@@ -130,7 +117,6 @@ function verificarYRederigir(userId) {
         })
         .catch(error => {
             console.error('Error al verificar rol:', error);
-            // En caso de error, redirigir al dashboard por defecto
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
             }, 1000);
@@ -157,14 +143,12 @@ document.getElementById('loginFormElement').addEventListener('submit', function 
                 </div>
             `;
 
-                // Guardar usuario en localStorage
                 localStorage.setItem('vita_user_id', data.user.id);
                 localStorage.setItem('vita_username', data.user.username);
                 localStorage.setItem('vita_email', data.user.email);
                 localStorage.setItem('vita_avatar_id', data.user.avatar_id);
                 localStorage.setItem('vita_user_data', JSON.stringify(data.user));
 
-                // Verificar el rol del usuario y redirigir según corresponda
                 verificarYRederigir(data.user.id);
             } else {
                 loginAlert.innerHTML = `
@@ -212,16 +196,19 @@ document.getElementById('registerFormElement').addEventListener('submit', functi
                 </div>
             `;
 
-                // Obtener el ID del usuario recién creado
-                // Primero intentamos obtenerlo de data.user.id, si no existe, hacemos login automático
+                const altura = parseFloat(document.getElementById('regAltura').value);
+                const peso = parseFloat(document.getElementById('regPeso').value);
+                const objetivo = document.getElementById('regObjetivo').value;
+                const nivelActividad = document.getElementById('regNivelActividad').value;
+
                 if (data.user && data.user.id) {
-                    crearMetasAutomaticas(data.user.id, formData);
+                    crearMetasAutomaticas(data.user.id, altura, peso, objetivo, nivelActividad);
                 } else {
-                    // Si no viene el usuario en la respuesta, hacemos login automático para obtener el ID
-                    hacerLoginDespuesRegistro(formData.get('username'), formData.get('password'));
+                    const username = document.getElementById('regUsername').value;
+                    const password = document.getElementById('regPassword').value;
+                    hacerLoginDespuesRegistro(username, password, altura, peso, objetivo, nivelActividad);
                 }
 
-                // Limpiar formulario y mostrar login después de 2 segundos
                 setTimeout(() => {
                     document.getElementById('registerFormElement').reset();
                     showLogin();
@@ -245,7 +232,7 @@ document.getElementById('registerFormElement').addEventListener('submit', functi
 });
 
 // Función para hacer login automático después del registro
-function hacerLoginDespuesRegistro(username, password) {
+function hacerLoginDespuesRegistro(username, password, altura, peso, objetivo, nivelActividad) {
     const loginData = new FormData();
     loginData.append('username', username);
     loginData.append('password', password);
@@ -257,10 +244,8 @@ function hacerLoginDespuesRegistro(username, password) {
         .then(response => response.json())
         .then(data => {
             if (data.success && data.user && data.user.id) {
-                // Una vez logueado, crear las metas automáticas
-                crearMetasAutomaticas(data.user.id, new FormData());
+                crearMetasAutomaticas(data.user.id, altura, peso, objetivo, nivelActividad);
 
-                // Guardar usuario en localStorage
                 localStorage.setItem('vita_user_id', data.user.id);
                 localStorage.setItem('vita_username', data.user.username);
                 localStorage.setItem('vita_email', data.user.email);
@@ -274,41 +259,64 @@ function hacerLoginDespuesRegistro(username, password) {
 }
 
 // Función para crear metas automáticas
-function crearMetasAutomaticas(usuarioId, formData) {
-    const altura = parseFloat(formData.get('altura_cm')) || 170; // Valor por defecto
-    const peso = parseFloat(formData.get('peso_kg')) || 70; // Valor por defecto
-    const objetivo = formData.get('objetivo') || 'mantener_peso';
-    const nivelActividad = formData.get('nivel_actividad') || 'moderado';
+function crearMetasAutomaticas(usuarioId, altura, peso, objetivo, nivelActividad) {
+    function calcularPesoIdeal(altura) {
+        return Math.round((altura - 100) * 0.9 * 10) / 10;
+    }
 
-    console.log('Creando metas automáticas para usuario:', usuarioId);
-    console.log('Datos:', { altura, peso, objetivo, nivelActividad });
+    function calcularCalorias(pesoIdeal, objetivo, nivelActividad) {
+        const caloriasBase = pesoIdeal * 25;
+        
+        const multiplicadores = {
+            'sedentario': 1.2,
+            'ligero': 1.375,
+            'moderado': 1.55,
+            'activo': 1.725,
+            'muy_activo': 1.9
+        };
+        
+        let calorias = caloriasBase * (multiplicadores[nivelActividad] || 1.55);
+        
+        if (objetivo === 'perder_peso') {
+            calorias -= 300;
+        } else if (objetivo === 'ganar_masa') {
+            calorias += 300;
+        }
+        
+        return Math.round(calorias);
+    }
 
-    // Calcular metas usando la fórmula universal
+    function calcularProteinas(pesoIdeal) {
+        return Math.round(pesoIdeal * 1.5);
+    }
+
+    function calcularCarbohidratos(caloriasTotales) {
+        const caloriasCarbohidratos = caloriasTotales * 0.5;
+        return Math.round(caloriasCarbohidratos / 4);
+    }
+
+    function calcularGrasas(caloriasTotales) {
+        const caloriasGrasas = caloriasTotales * 0.3;
+        return Math.round(caloriasGrasas / 9);
+    }
+
     const pesoIdeal = calcularPesoIdeal(altura);
-    const caloriasIdeal = calcularCaloriasIdeal(pesoIdeal, objetivo, nivelActividad);
-    const proteinasIdeal = calcularProteinasIdeal(pesoIdeal);
-    const grasasIdeal = calcularGrasasIdeal(caloriasIdeal);
-    const carbohidratosIdeal = calcularCarbohidratosIdeal(caloriasIdeal, proteinasIdeal, grasasIdeal);
+    const caloriasIdeal = calcularCalorias(pesoIdeal, objetivo, nivelActividad);
+    const proteinasIdeal = calcularProteinas(pesoIdeal);
+    const carbohidratosIdeal = calcularCarbohidratos(caloriasIdeal);
+    const grasasIdeal = calcularGrasas(caloriasIdeal);
 
-    console.log('Metas calculadas:', {
-        pesoIdeal,
-        caloriasIdeal,
-        proteinasIdeal,
-        grasasIdeal,
-        carbohidratosIdeal
-    });
-
-    // Crear array de metas
     const metas = [
         { tipo: 'peso', valor: pesoIdeal },
         { tipo: 'calorias', valor: caloriasIdeal },
         { tipo: 'proteinas', valor: proteinasIdeal },
-        { tipo: 'grasas', valor: grasasIdeal },
-        { tipo: 'carbohidratos', valor: carbohidratosIdeal }
+        { tipo: 'carbohidratos', valor: carbohidratosIdeal },
+        { tipo: 'grasas', valor: grasasIdeal }
     ];
 
-    // Enviar cada meta al servidor
     let metasCreadas = 0;
+    const totalMetas = metas.length;
+
     metas.forEach(meta => {
         const metaData = {
             usuario_id: usuarioId,
@@ -316,8 +324,6 @@ function crearMetasAutomaticas(usuarioId, formData) {
             valor_objetivo: meta.valor,
             estado: 'activa'
         };
-
-        console.log('Enviando meta:', metaData);
 
         fetch('meta/meta_registrar.php', {
             method: 'POST',
@@ -329,84 +335,29 @@ function crearMetasAutomaticas(usuarioId, formData) {
             .then(response => response.json())
             .then(data => {
                 metasCreadas++;
-                if (data.success) {
-                    console.log(`Meta ${meta.tipo} creada correctamente`);
-                } else {
-                    console.error(`Error creando meta ${meta.tipo}:`, data.message);
-                }
-
-                // Cuando se creen todas las metas, mostrar mensaje
-                if (metasCreadas === metas.length) {
-                    console.log('Todas las metas automáticas creadas');
+                if (!data.success) {
+                    console.error('Error creando meta:', data.message);
                 }
             })
             .catch(error => {
                 metasCreadas++;
-                console.error(`Error creando meta ${meta.tipo}:`, error);
+                console.error('Error de conexión:', error);
             });
     });
 }
 
-// Funciones de cálculo según la fórmula universal
-function calcularPesoIdeal(altura) {
-    const alturaMetros = altura / 100;
-    return Math.round(22 * (alturaMetros * alturaMetros) * 10) / 10;
-}
-
-function calcularCaloriasIdeal(pesoIdeal, objetivo, nivelActividad) {
-    let caloriasBase = 22 * pesoIdeal + 500;
-
-    // Ajustar según objetivo
-    if (objetivo === 'perder_peso') {
-        caloriasBase -= 300;
-    } else if (objetivo === 'ganar_masa') {
-        caloriasBase += 300;
-    }
-
-    // Ajustar según nivel de actividad
-    const multiplicadores = {
-        'sedentario': 1.2,
-        'ligero': 1.375,
-        'moderado': 1.55,
-        'activo': 1.725,
-        'muy_activo': 1.9
-    };
-
-    return Math.round(caloriasBase * (multiplicadores[nivelActividad] || 1.2));
-}
-
-function calcularProteinasIdeal(pesoIdeal) {
-    return Math.round(pesoIdeal * 1.2);
-}
-
-function calcularGrasasIdeal(calorias) {
-    const kcalGrasas = calorias * 0.3;
-    return Math.round(kcalGrasas / 9);
-}
-
-function calcularCarbohidratosIdeal(calorias, proteinas, grasas) {
-    const kcalProteinas = proteinas * 4;
-    const kcalGrasas = grasas * 9;
-    const kcalCarbohidratos = calorias - kcalProteinas - kcalGrasas;
-    return Math.round(kcalCarbohidratos / 4);
-}
-
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function () {
-    // Verificar si ya hay una sesión activa
     const userId = localStorage.getItem('vita_user_id');
     if (userId) {
-        // Si ya hay sesión, verificar el rol y redirigir
         verificarYRederigir(userId);
     }
 
-    // Establecer fecha máxima para fecha de nacimiento (13 años atrás como mínimo)
     const fechaInput = document.getElementById('regFechaNacimiento');
     const today = new Date();
     const maxDate = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
     fechaInput.max = maxDate.toISOString().split('T')[0];
 
-    // Establecer fecha por defecto (25 años atrás)
     const defaultDate = new Date(today.getFullYear() - 25, today.getMonth(), today.getDate());
     fechaInput.value = defaultDate.toISOString().split('T')[0];
 });
